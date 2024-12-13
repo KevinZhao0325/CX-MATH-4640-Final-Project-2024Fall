@@ -1,10 +1,8 @@
-# CX-MATH-4640-Final-Project-2024Fall
-
 ```
 ---
-Name: Your Name
-Topic: [Topic Number from topics.md]
-Title: Title of your article
+Name: Yiwen Zhao
+Topic: Very high order accurate time steppers
+Title: Very high order accurate time steppers
 ----
 ```
 
