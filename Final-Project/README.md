@@ -10,7 +10,7 @@ Title: Background and Application of Very High Order Accurate Time Steppers
 - [Overview](#Overview)
 - [What is a Time Stepper](#What-is-a-Time-Stepper)
 - [Background and History](#Background-and-History)
-- [Penalty Function Method Overview](#Penalty-Function-Method-Overview)
+- [Spectral Deferred Correction (SDC) Methods](#Spectral-Deferred-Correction-(SDC)-Methods)
 - [Common Applications](#Common-Applications)
 - [Formulation](#Formulation)
 - [Penalty Function Options](#Penalty-Function-Options)
@@ -43,6 +43,37 @@ In parallel, the development of spectral and high-order finite element methods i
 The late 20th and early 21st centuries saw the emergence of new families of methods that aimed to achieve high order in a more flexible manner. Spectral Deferred Correction (SDC) methods, introduced by Minion (2003), provided a framework to iteratively improve an initial low-order approximation through a series of correction sweeps, leveraging integral forms and high-order quadrature rules to reach very high accuracy orders. Simultaneously, work on stability-preserving integrators, such as strong stability-preserving (SSP) schemes, extended the concept of high order to situations requiring careful handling of stiff or strongly nonlinear problems (Ketcheson, Ahmadia & Warburton, 2013).
 
 Throughout this progression, improvements in computational hardware and numerical linear algebra techniques made the use of more complex, stage-rich integrators feasible. While still not ubiquitous in everyday engineering or industrial simulations—where second- to fourth-order methods often remain a practical choice—very high order time steppers are integral to cutting-edge research problems. They enable long-time, high-fidelity integrations of dynamical systems and better synergy with high-resolution spatial discretizations, pushing the frontiers of what is numerically achievable.
+
+## Spectral Deferred Correction (SDC) Methods
+
+Spectral Deferred Correction (SDC) methods are a class of iterative time stepping strategies designed to achieve very high order temporal accuracy when solving ordinary differential equations (ODEs). They start from a low-order method and iteratively improve the approximation by using integral error corrections, ultimately reaching arbitrarily high orders of accuracy given sufficient correction sweeps and appropriately chosen quadrature rules. These methods were introduced as a systematic way to refine the solution on a single time step and can complement high-order spatial discretizations, ensuring the temporal error does not become a limiting factor in the overall solution accuracy.
+
+Consider an ODE system of the form
+$\frac{dy}{dt} = f(t, y), \quad y(t_0) = y_0.$
+We aim to integrate this system from $t^n$ to $t^{n+1} = t^n + \Delta t$.
+
+The SDC method introduces $M$ quadrature nodes within the interval $[t^n, t^{n+1}]$. Denote these nodes as
+$t^n = \tau_0 < \tau_1 < \cdots < \tau_M = t^{n+1},$
+and let $Y_j$ approximate $y(\tau_j)$. An initial guess $\{Y_j^{(0)}\}$ is obtained by a simple low-order method (e.g., Forward Euler or a low-order Runge-Kutta scheme).
+
+The idea is to write the ODE in integral form on each sub-interval:
+$y(\tau_{j+1}) = y(\tau_j) + \int_{\tau_j}^{\tau_{j+1}} f(t, y(t)) dt.$
+
+Using an appropriate quadrature rule to approximate the integral, and replacing the exact solution $y(t)$ with the current approximation, we can form correction equations. The SDC iteration uses differences between two integral approximations (from successive iterations) to refine the solution.
+
+Define at iteration $k$ the approximations $\{Y_j^{(k)}\}$. The correction step aims to improve $\{Y_j^{(k+1)}\}$ based on the difference between integral approximations of $f$ from iteration $k$ and $k-1$. In discrete form, a typical update rule looks like:
+$Y_j^{(k+1)} = Y_j^{(k)} + \sum_{m=0}^{M} Q_{j,m} \bigl[ f(\tau_m, Y_m^{(k)}) - f(\tau_m, Y_m^{(k-1)}) \bigr],$
+where $Q_{j,m}$ are weights derived from the chosen quadrature rule.
+
+By iterating this correction step multiple times, the approximation on each node improves. As the number of correction sweeps increases, the local order of accuracy can be raised to very high values, often limited only by factors such as round-off error and the smoothness of the solution.
+
+Initialization: Start with a low-order approximation $\{Y_j^{(0)}\}$, obtained from a simple method.
+
+Correction Sweeps: Perform a number of SDC sweeps (iterations). Each sweep reduces the local truncation error and increases the effective order of the method.
+
+Cost vs. Accuracy: Each correction sweep adds computational cost (due to multiple function evaluations and possibly solving implicit equations), but can reduce the number of time steps needed for a given accuracy, especially for very precise and long-time integrations.
+
+Extension to Stiff Problems: For stiff systems, $f(t,y)$ can be split into stiff and nonstiff parts, resulting in IMEX-SDC methods that combine implicit treatment of the stiff terms with explicit handling of the nonstiff ones.
 
 
 ## References
