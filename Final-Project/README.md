@@ -13,7 +13,7 @@ You can include equations in the usual LaTeX-like way, $Ax=b$, or like this
 $$Ax=b.$$
 You can view the source of this markdown document by clicking the edit/raw button on its source; it's also at [this link](https://raw.githubusercontent.com/numerical-analysis-f23/project-help/main/readme.md).
 
-<img src = "images/temp.png" align = "center" width="60%" hight="60%">
+<img src = "temp.png" align = "center" width="60%" hight="60%">
 
 You can also include images like this (notice that the image file is in the repository)! 
 
