@@ -9,6 +9,7 @@ Title: Background and Application of Very High Order Accurate Time Steppers
 ## Table of Contents
 - [Overview](#Overview)
 - [What is a Time Stepper](#What-is-a-Time-Stepper)
+- [Background and History](#Background-and-History)
 - [Penalty Function Method Overview](#Penalty-Function-Method-Overview)
 - [Common Applications](#Common-Applications)
 - [Formulation](#Formulation)
@@ -30,6 +31,18 @@ Applications of very high order time steppers emerge when the solution is extrem
 A time stepper, also known as a time integration method or time integrator, is a numerical algorithm used to advance the solution of a time-dependent problem from one discrete time level to the next. In other words, given a system of ordinary differential equations (ODEs) or partial differential equations (PDEs) that describe how a physical quantity evolves over time, a time stepper approximates the state of the system at a sequence of discrete time points (e.g., t = 0, Δt, 2Δt, …) starting from initial conditions (Hairer, Nørsett & Wanner, 1993; Butcher, 2016).
 
 At the core, a time stepper is replacing the continuous derivative of the system (i.e., dy/dt = f(t, y)) with something discrete. This approximation is used to “step” forward in time by a user-defined increment of Δt over the chosen interval; a variety of different time steppers can be employed depending on the complexity of the problem and desired accuracy, covering the spectrum from simple, low-order (e.g., Forward Euler) to more sophisticated, higher-order methods (Hairer & Wanner, 1996; Ketcheson et al., 2013). Every time stepper has its own trade-offs in accuracy, stability, computational cost, and implementation complexity.
+
+## Background and History
+
+The quest for high-order time integration methods dates back to the early studies of ordinary differential equations (ODEs) and the need for more accurate, stable numerical solutions. Early numerical methods, such as Euler’s method (first order) and the classical fourth-order Runge-Kutta scheme, provided accessible frameworks for solving a wide variety of initial value problems. However, as computational power and the complexity of applications increased—from fluid dynamics and climate modeling to celestial mechanics and chemical kinetics—there emerged a need for methods that could achieve significantly higher temporal accuracy (Butcher, 2016; Hairer, Nørsett & Wanner, 1993).
+
+By the mid-20th century, researchers had developed the theoretical groundwork for constructing high-order methods, particularly through the systematic derivation of order conditions. For Runge-Kutta (RK) methods, these order conditions—introduced and refined by scholars such as John Butcher—allowed the design of schemes with arbitrarily high order given enough carefully chosen function evaluations. Collocation methods, like Gauss-Legendre implicit RK integrators, offered a systematic path to achieving high order by increasing the number of internal stages, though at the cost of solving more complex systems at each step (Butcher, 2016; Hairer & Wanner, 1996).
+
+In parallel, the development of spectral and high-order finite element methods in the spatial dimension created a demand for time integrators that could match such high spatial accuracies. Without increasing the temporal order, the full potential of these spatial methods could not be realized, as lower-order time-stepping would become a bottleneck, limiting overall solution accuracy. This synergy drove research toward methods that are eighth order and beyond, ensuring that the temporal discretization error remained negligible compared to the spatial one (Hairer, Nørsett & Wanner, 1993).
+
+The late 20th and early 21st centuries saw the emergence of new families of methods that aimed to achieve high order in a more flexible manner. Spectral Deferred Correction (SDC) methods, introduced by Minion (2003), provided a framework to iteratively improve an initial low-order approximation through a series of correction sweeps, leveraging integral forms and high-order quadrature rules to reach very high accuracy orders. Simultaneously, work on stability-preserving integrators, such as strong stability-preserving (SSP) schemes, extended the concept of high order to situations requiring careful handling of stiff or strongly nonlinear problems (Ketcheson, Ahmadia & Warburton, 2013).
+
+Throughout this progression, improvements in computational hardware and numerical linear algebra techniques made the use of more complex, stage-rich integrators feasible. While still not ubiquitous in everyday engineering or industrial simulations—where second- to fourth-order methods often remain a practical choice—very high order time steppers are integral to cutting-edge research problems. They enable long-time, high-fidelity integrations of dynamical systems and better synergy with high-resolution spatial discretizations, pushing the frontiers of what is numerically achievable.
 
 
 ## References
