@@ -12,8 +12,8 @@ Title: Background and Application of Very High Order Accurate Time Steppers
 - [Background and History](#Background-and-History)
 - [Spectral Deferred Correction (SDC) Methods](#Spectral-Deferred-Correction-(SDC)-Methods)
 - [Common Applications](#Common-Applications)
-- [Formulation](#Formulation)
-- [Penalty Function Options](#Penalty-Function-Options)
+- [Why to Use](#Why-to-Use)
+- [Tradeoffs](#Tradeoffs)
 - [References](#References)
 
 ## Overview
@@ -73,8 +73,40 @@ Correction Sweeps: Perform a number of SDC sweeps (iterations). Each sweep reduc
 
 Cost vs. Accuracy: Each correction sweep adds computational cost (due to multiple function evaluations and possibly solving implicit equations), but can reduce the number of time steps needed for a given accuracy, especially for very precise and long-time integrations.
 
-Extension to Stiff Problems: For stiff systems, $f(t,y)$ can be split into stiff and nonstiff parts, resulting in IMEX-SDC methods that combine implicit treatment of the stiff terms with explicit handling of the nonstiff ones.
+## Common Applications
 
+High-Resolution PDE Simulations:
+In computational fluid dynamics (CFD), wave propagation, and other PDE-based simulations, very high order time steppers are used in conjunction with high-order spatial discretizations (spectral methods, high-order finite elements, discontinuous Galerkin methods) to maintain balanced accuracy in both time and space. By ensuring the temporal error does not dominate, these methods help achieve more reliable results in areas such as turbulent flow simulations and complex multiphysics problems (Hairer, Nørsett & Wanner, 1993; Butcher, 2016).
+
+Long-Term Integrations in Celestial Mechanics and Astrodynamics:
+Orbital mechanics simulations often require integrating over very long time spans. Small temporal errors can accumulate significantly, affecting the fidelity of the predicted trajectories. Very high order methods minimize these accumulations, helping maintain stable and accurate long-term predictions of planetary orbits, spacecraft trajectories, and other celestial phenomena (Hairer & Wanner, 1996).
+
+Climate and Weather Modeling:
+Climate and large-scale atmospheric models run for extended simulation times. Ensuring high temporal accuracy helps prevent the gradual drift of solutions due to numerical errors. Coupled with high-order spatial schemes, very high order time steppers contribute to more accurate climate and weather predictions (Ketcheson, Ahmadia & Warburton, 2013).
+
+Chemical Kinetics and Combustion:
+In modeling complex chemical reaction networks, where stiffness and large variations in timescales are prevalent, the use of high-order implicit or IMEX-based SDC methods can improve the resolution of fast dynamics without excessively restricting the timestep (Minion, 2003).
+
+Parameter Studies, Sensitivity Analysis, and Optimization:
+When performing parameter sweeps, inverse problems, or sensitivity analyses, numerical errors can obscure subtle effects of parameter changes. Very high order time steppers minimize discretization errors, leading to more definitive conclusions about system behavior under parameter variations (Butcher, 2016).
+
+## Why to Use
+
+Very high order accurate time steppers can be exceptionally beneficial when the problem at hand demands extremely low error tolerances over potentially long simulation times. In certain specialized applications, they can significantly reduce the number of timesteps required to achieve a given accuracy, potentially resulting in computational savings despite their higher per-step cost. For instance, when combined with high-order spatial discretizations (e.g., spectral methods), matching the order in time can ensure that the temporal error does not become the limiting factor in the overall solution accuracy (Hairer, Nørsett & Wanner, 1993; Butcher, 2016). In scenarios like long-term orbital dynamics, climate modeling, and high-fidelity PDE simulations, the added complexity of very high order methods may be justified by the improvement in accuracy and efficiency over the entire simulation runtime (Hairer & Wanner, 1996; Ketcheson, Ahmadia & Warburton, 2013).
+
+## Tradeoffs
+
+Complexity and Implementation Effort:
+Deriving and implementing very high order methods, such as high-order Runge-Kutta schemes or Spectral Deferred Correction methods, can be nontrivial. Ensuring stability, selecting appropriate quadrature points, and dealing with nonlinear solver complexity (for implicit methods) may require significant expertise and development time (Butcher, 2016; Minion, 2003).
+
+Increased Computational Cost per Step:
+High-order schemes typically involve more internal stages (for Runge-Kutta methods) or multiple correction sweeps (for SDC methods). As a result, each timestep demands more function evaluations and possibly the solution of larger, more complex systems of equations. While fewer total timesteps might be needed, the cost per step is often higher (Hairer & Wanner, 1996).
+
+Stability Concerns and Step Size Restrictions:
+Many high-order explicit methods have smaller stability regions, which may force the use of smaller timesteps in stiff or marginally stable problems. Although implicit high-order methods can alleviate stability concerns, they come with the cost of solving nonlinear systems at each step, further increasing computational expense (Hairer, Nørsett & Wanner, 1993).
+
+Sensitivity to Round-Off and Error Constants:
+Although the order might be high, the error constants associated with these methods can be significant. Moreover, for extremely small step sizes, round-off errors might erode the theoretical accuracy gains. Thus, practical efficiency gains depend on both the magnitude of solution derivatives and the length of the integration interval (Butcher, 2016).
 
 ## References
 
@@ -85,30 +117,3 @@ Extension to Stiff Problems: For stiff systems, $f(t,y)$ can be split into stiff
 5. Minion, M. L. (2003). Semi-implicit spectral deferred correction methods for ordinary differential equations. Comm. Math. Sci., 1(3), 471–500.
 
 
-## Formatting 
-
-Use "GitHub" flavored markdown, a slightly different version of the "vanilla" markdown. The file extension is usually `.md`.
-You can include equations in the usual LaTeX-like way, $Ax=b$, or like this
-$$Ax=b.$$
-You can view the source of this markdown document by clicking the edit/raw button on its source; it's also at [this link](https://raw.githubusercontent.com/numerical-analysis-f23/project-help/main/readme.md).
-
-<img src = "temp.png" align = "center" width="60%" hight="60%">
-
-You can also include images like this (notice that the image file is in the repository)! 
-
-![](example_gif.gif)
-
-You can also include `.gif`s!
-
-Pseudocode is included via triple backticks, like this
-```
-Pseudocode
-Can
-Go 
-Here
-```
-and inline code can `go like this`.
-
-Here are some links for Github-flavored markdown syntax that could be helpful:
-* https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-* https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
